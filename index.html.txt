@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>নাজমুল ফার্ণিচার</title>
+
+<style>
+body{
+    margin:0;
+    font-family: Arial, sans-serif;
+    background:#f2f2f2;
+}
+
+header{
+    background: linear-gradient(45deg,#8B4513,#c97b30);
+    color:white;
+    padding:30px;
+    text-align:center;
+}
+
+header h1{
+    margin:0;
+    font-size:35px;
+}
+
+.container{
+    width:90%;
+    margin:auto;
+    padding:20px 0;
+}
+
+.admin{
+    background:white;
+    padding:15px;
+    border-radius:10px;
+    margin-bottom:20px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+.products{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap:20px;
+}
+
+.card{
+    background:white;
+    padding:15px;
+    border-radius:15px;
+    box-shadow:0 0 15px rgba(0,0,0,0.1);
+    text-align:center;
+    transition:0.3s;
+}
+
+.card:hover{
+    transform:scale(1.05);
+}
+
+.card img{
+    width:100%;
+    height:200px;
+    object-fit:cover;
+    border-radius:10px;
+}
+
+button{
+    background:#8B4513;
+    color:white;
+    padding:8px 12px;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+    margin:5px;
+}
+
+button:hover{
+    background:#5a2d0c;
+}
+
+footer{
+    background:#333;
+    color:white;
+    text-align:center;
+    padding:15px;
+    margin-top:20px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🪑 নাজমুল ফার্ণিচার</h1>
+    <p>আপনার বিশ্বস্ত ফার্ণিচার শপ</p>
+</header>
+
+<div class="container">
+
+    <!-- Admin Login -->
+    <div class="admin" id="adminPanel" style="display:none;">
+        <h3>🔐 অ্যাডমিন প্যানেল</h3>
+        <input type="text" id="pname" placeholder="পণ্যের নাম">
+        <input type="file" id="pimage">
+        <button onclick="addProduct()">পণ্য যোগ করুন</button>
+    </div>
+
+    <button onclick="adminLogin()">অ্যাডমিন লগইন</button>
+
+    <!-- Products -->
+    <div class="products" id="productList"></div>
+
+</div>
+
+<footer>
+    © 2026 নাজমুল ফার্ণিচার | সকল অধিকার সংরক্ষিত
+</footer>
+
+<script>
+
+let products = JSON.parse(localStorage.getItem("products")) || [];
+
+function adminLogin(){
+    let pass = prompt("অ্যাডমিন পাসওয়ার্ড দিন:");
+    if(pass === "1234"){
+        document.getElementById("adminPanel").style.display="block";
+    }else{
+        alert("ভুল পাসওয়ার্ড!");
+    }
+}
+
+function displayProducts(){
+    let list = document.getElementById("productList");
+    list.innerHTML="";
+    products.forEach((p,index)=>{
+        list.innerHTML += `
+        <div class="card">
+            <img src="${p.image}">
+            <h3>${p.name}</h3>
+
+            <a href="https://wa.me/8801XXXXXXXXX?text=আমি ${p.name} অর্ডার করতে চাই" target="_blank">
+                <button>WhatsApp অর্ডার</button>
+            </a>
+
+            <button onclick="alert('বিকাশ করুন: 017XXXXXXXX')">বিকাশ পেমেন্ট</button>
+
+            <button onclick="deleteProduct(${index})">ডিলিট</button>
+        </div>
+        `;
+    });
+}
+
+function addProduct(){
+    let name = document.getElementById("pname").value;
+    let file = document.getElementById("pimage").files[0];
+
+    if(name === "" || !file){
+        alert("সব তথ্য দিন");
+        return;
+    }
+
+    let reader = new FileReader();
+    reader.onload = function(){
+        products.push({name:name, image:reader.result});
+        localStorage.setItem("products", JSON.stringify(products));
+        displayProducts();
+    }
+    reader.readAsDataURL(file);
+}
+
+function deleteProduct(index){
+    products.splice(index,1);
+    localStorage.setItem("products", JSON.stringify(products));
+    displayProducts();
+}
+
+displayProducts();
+
+</script>
+
+</body>
+</html>
